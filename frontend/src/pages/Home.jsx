@@ -8,7 +8,7 @@ const Home = () => {
     return (
         <div>
             <p>画面</p>
-            <h1>2ch風掲示板API-卒業制作</h1>
+            <h1>2ch風掲示板API</h1>
             <TodoList />
             <SignIn />
         </div>
