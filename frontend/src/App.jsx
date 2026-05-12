@@ -32,6 +32,13 @@ function App() {
   return (
     <div className="App" id='main'>
       <h1>{message}</h1>
+      {/* <h1>投稿一覧</h1>
+      {posts.map((post)=>(
+        <div key={post.id}>
+          <h2>{post.title}</h2>
+          <p>{post.content}</p>
+        </div>
+      ))} */}
       <input type="text"
         placeholder='タイトル'
         value={title}
