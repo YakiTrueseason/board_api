@@ -72,13 +72,12 @@ def update_post(id: int,post: PostCreate): #どの投稿をどんな内容に変
     #更新　pythonオブジェクト変更
     db_post.title = post.title
     db_post.content = post.content
-    #更新確定
+    #DB保存　更新確定
     db.commit()
-    #DB最新状態取得
+    #最新状態取得
     db.refresh(db_post)
     #DB接続終了
     db.close()
-
     return db_post
     # if id < len(posts): #そのIDが存在するか確認
         # posts[id] = post
@@ -87,14 +86,14 @@ def update_post(id: int,post: PostCreate): #どの投稿をどんな内容に変
 #投稿削除
 @app.delete("/posts/{id}")
 def delete_post(id: int):
-    db = SessionLocal()
-
+    db = SessionLocal() #SQLite接続開始
+    #テーブル操作を開始しidを一致検索、最初の1件を取得する
     db_post = db.query(DBPost).filter(DBPost.id == id).first()
-
+    #該当データ無いか？
     if not db_post:
         db.close()
         return{"error":"存在しない"}
-    
+    #削除予約
     db.delete(db_post)
     db.commit()
     db.close()
@@ -104,15 +103,13 @@ def delete_post(id: int):
         # if post.id == id:#配列のチェック　指定番号削除
             # posts.pop(i)
             # return{"message":"削除成功"}#IDを探して削除出来るようにする
-
     # return{"error":"存在しない"}#範囲外ならエラー
-# デバック
+
+# デバック　開発確認用API
 @app.get("/debug")
 def debug_db():
     db = SessionLocal()
-
+    #全件取得
     posts = db.query(DBPost).all()
-
     db.close()
-    
     return posts
