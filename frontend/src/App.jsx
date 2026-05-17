@@ -1,5 +1,4 @@
 import './App.css';
-import SignIn from './components/SignIn';
 import { useEffect, useState } from "react";
 
 function App() {
@@ -8,16 +7,30 @@ function App() {
   const [content, setContent] = useState("");
   const [posts,setPosts] = useState([]);
   const[editId,setEditId] = useState(null); //今どの投稿を編集しているか
+  const [isModalOpen,setIsModalOpen] = useState(false); //モーダル状態
 
-  useEffect(() => {
-    fetch("http://localhost:8000/posts") //API通信
-      .then((res) => res.json()) //apiから帰ってきたデータをjson形式に変換
-      .then((data) => {
-        setPosts(data); //データを取り出す
-      });
+//API_URL定数化
+  const API_URL = "http://localhost:8000/posts";
+
+  // 投稿取得専用共通関数
+  const getPosts = async ()=>{
+    try{ //とりあえず実行
+    const res = await fetch(API_URL); //API通信
+    const data = await res.json(); //apiから帰ってきたデータをjson形式に変換
+    setPosts(data); //データを取り出す 
+    }catch(error){ //エラー捕獲
+      console.log(error);
+    }
+  };
+
+  useEffect(() => { // 初回実行
+    getPosts(); //API取得
   }, []); //最初の一回実行
-  const sendPost = async () => { //投稿処理
-    const res = await fetch("http://localhost:8000/posts", {
+
+//投稿処理
+  const sendPost = async () => { 
+    try{
+    const res = await fetch(API_URL, {
         method: "POST", //投稿作成
         headers: {
           "Content-Type": "application/json", //json形式で送ります
@@ -29,38 +42,44 @@ function App() {
       });
       const data = await res.json(); //JSON変換
       console.log(data);
+    }catch(error){
+      console.log(error);
+    }
+
     //投稿一覧再取得
-    fetch("http://localhost:8000/posts")
-    .then((res)=>res.json()) //APIレスポンスをJSON変換
-    .then((data)=>{ 
-      setPosts(data); //React状態更新
-    });
+    getPosts();
+    // .then((res)=>res.json()) //APIレスポンスをJSON変換
+    // .then((data)=>{ 
+    //   setPosts(data); //
+    // });
+
     //入力リセット
     setTitle("");
     setContent("");
   };
+
   //削除
   const deletePost = async(id)=>{
-    await fetch(`http://localhost:8000/posts/${id}`,{
+    await fetch(`${API_URL}/${id}`,{
       method:"DELETE",
     });
+
     //投稿一覧再取得 画面を最新化する為
-    fetch("http://localhost:8000/posts") 
-    .then((res)=>res.json())
-    .then((data)=>{
-      setPosts(data);
-    });
+    getPosts();
   };
+
   //編集
   const startEdit = (post) =>{
     // console.log(post);
     setEditId(post.id); //今この投稿編集中
     setTitle(post.title); 
     setContent(post.content); //内容表示
+    setIsModalOpen(true); //モーダル表示
   };
 
+// 更新
   const updatePost = async()=>{
-    await fetch(`http://localhost:8000/posts/${editId}`,{
+    await fetch(`${API_URL}/${editId}`,{
       method:"PUT",
       headers:{
         "Content-Type":"application/json", //jsをJSON変換し、データを送る本体
@@ -70,22 +89,25 @@ function App() {
         content,
       }),
     });
+
     //再取得
-    fetch("http://localhost:8000/posts")
-    .then((res)=>res.json()) //APIレスポンスをJSON変換
-    .then((data)=>{
-      setPosts(data);
-    });
+    getPosts();
+    // .then((res)=>res.json()) //APIレスポンスをJSON変換
+    // .then((data)=>{
+    //   setPosts(data);
+    // });
     //リセット
     setEditId(null); //編集モード終了　編集対処ID
     //文字入力
     setTitle("");
     setContent("");
+    setIsModalOpen(false); //モーダル非表示
   }
   return (
     <div className="App" id='main'>
       {/* <h1>{message}</h1> */}
       <h1>投稿一覧</h1>
+
       {/* タイトル出力*/}
       <input type="text"
         placeholder='タイトル'
@@ -93,6 +115,7 @@ function App() {
         onChange={(e) =>
           setTitle(e.target.value)}
       />
+
       {/* 投稿内容出力*/}
       <input type="text"
         placeholder='内容'
@@ -101,18 +124,20 @@ function App() {
           setContent(e.target.value)}
       />
       <br></br>
+
       {/* 現在編集中かどうか */}
       {editId !== null ? ( 
         <button onClick={updatePost}>更新</button>
       ):(
               <button onClick={sendPost}>送信</button>
       )}
-      <SignIn />
+
       {/* タイトルと内容表示 */}
       {posts.map((post)=>(
         <div key={post.id}>
           <h2>{post.title}</h2>
           <p>{post.content}</p>
+
         {/* 削除ボタン */}
           <button onClick={() => deletePost(post.id)}>
             削除
@@ -122,6 +147,27 @@ function App() {
           </button>
         </div>
       ))}
+
+      {/* モーダル */}
+      {isModalOpen && (
+        <div className='modal-overlay'>
+          <div className='modal'>
+            <h2>投稿編集</h2>
+            <input type="text"
+                  value={title}
+                  onChange={(e)=>setTitle(e.target.value)}/>
+            <input type="text"
+                  value={content}
+                  onChange={(e)=>setContent(e.target.value)}/>
+            <button onClick={updatePost}>
+              更新
+            </button>
+            <button onClick={()=>setIsModalOpen(false)}>
+              閉じる
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
