@@ -1,5 +1,9 @@
 import './App.css';
 import { useEffect, useState } from "react";
+import PostList from './pages/PostList';
+import EditModal from './pages/EditModal';
+import PostForm from './pages/PostForm';
+import Home from './pages/Home';
 
 function App() {
   // const [message, setMessage] = useState("");
@@ -105,69 +109,37 @@ function App() {
   }
   return (
     <div className="App" id='main'>
-      {/* <h1>{message}</h1> */}
-      <h1>投稿一覧</h1>
-
+      <Home />
       {/* タイトル出力*/}
-      <input type="text"
-        placeholder='タイトル'
-        value={title}
-        onChange={(e) =>
-          setTitle(e.target.value)}
-      />
-
       {/* 投稿内容出力*/}
-      <input type="text"
-        placeholder='内容'
-        value={content}
-        onChange={(e) =>
-          setContent(e.target.value)}
-      />
-      <br></br>
-
       {/* 現在編集中かどうか */}
-      {editId !== null ? ( 
-        <button onClick={updatePost}>更新</button>
-      ):(
-              <button onClick={sendPost}>送信</button>
-      )}
+    <PostForm 
+        editId={editId}
+        title={title}
+        setTitle={setTitle}
+        content={content}
+        setContent={setContent}
+        updatePost={updatePost}
+        sendPost={sendPost}
+    />
 
       {/* タイトルと内容表示 */}
-      {posts.map((post)=>(
-        <div key={post.id}>
-          <h2>{post.title}</h2>
-          <p>{post.content}</p>
-
-        {/* 削除ボタン */}
-          <button onClick={() => deletePost(post.id)}>
-            削除
-          </button>
-          <button onClick={()=> startEdit(post)}>
-            編集
-          </button>
-        </div>
-      ))}
+      <PostList 
+        posts={posts}
+        deletePost={deletePost}
+        startEdit={startEdit}
+      />
 
       {/* モーダル */}
-      {isModalOpen && (
-        <div className='modal-overlay'>
-          <div className='modal'>
-            <h2>投稿編集</h2>
-            <input type="text"
-                  value={title}
-                  onChange={(e)=>setTitle(e.target.value)}/>
-            <input type="text"
-                  value={content}
-                  onChange={(e)=>setContent(e.target.value)}/>
-            <button onClick={updatePost}>
-              更新
-            </button>
-            <button onClick={()=>setIsModalOpen(false)}>
-              閉じる
-            </button>
-          </div>
-        </div>
-      )}
+      <EditModal 
+      isModalOpen={isModalOpen}
+      title={title}
+      setTitle={setTitle}
+      setContent={setContent}
+      content={content}
+      updatePost={updatePost}
+      setIsModalOpen={setIsModalOpen}
+      />
     </div>
   );
 }
