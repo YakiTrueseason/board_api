@@ -1,3 +1,5 @@
+//フォーム
+
 import React from 'react'
 
 function PostForm({title,setTitle,content,setContent,editId,updatePost,sendPost}) {

@@ -1,3 +1,5 @@
+//１件表示
+
 import React from 'react'
 
 function PostItem({post,deletePost,startEdit}) {
