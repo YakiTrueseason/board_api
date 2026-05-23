@@ -1,118 +1,34 @@
 import './App.css';
-import { useEffect, useState } from "react";
-import PostList from './pages/PostList';
-import EditModal from './pages/EditModal';
-import PostForm from './pages/PostForm';
 import Home from './pages/Home';
+import PostList from './components/PostList';
+import EditModal from './components/EditModal';
+import PostForm from './components/PostForm';
+import { usePosts } from './hooks/UsePosts';
+
 
 function App() {
-  // const [message, setMessage] = useState("");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [posts,setPosts] = useState([]);
-  const[editId,setEditId] = useState(null); //今どの投稿を編集しているか
-  const [isModalOpen,setIsModalOpen] = useState(false); //モーダル状態
+  const{
+    posts,
+    title,
+    content,
+    editId,
+    isModalOpen,
 
-//API_URL定数化
-  const API_URL = "http://localhost:8000/posts";
+    setTitle,
+    setContent,
+    setIsModalOpen,
 
-  // 投稿取得専用共通関数
-  const getPosts = async ()=>{
-    try{ //とりあえず実行
-    const res = await fetch(API_URL); //API通信
-    const data = await res.json(); //apiから帰ってきたデータをjson形式に変換
-    setPosts(data); //データを取り出す 
-    }catch(error){ //エラー捕獲
-      console.log(error);
-    }
-  };
-
-  useEffect(() => { // 初回実行
-    getPosts(); //API取得
-  }, []); //最初の一回実行
-
-//投稿処理
-  const sendPost = async () => { 
-    try{
-    const res = await fetch(API_URL, {
-        method: "POST", //投稿作成
-        headers: {
-          "Content-Type": "application/json", //json形式で送ります
-        },
-        body: JSON.stringify({ //jsをJSON変換し、データを送る本体
-          title: title,
-          content: content,
-        }),
-      });
-      const data = await res.json(); //JSON変換
-      console.log(data);
-    }catch(error){
-      console.log(error);
-    }
-
-    //投稿一覧再取得
-    getPosts();
-    // .then((res)=>res.json()) //APIレスポンスをJSON変換
-    // .then((data)=>{ 
-    //   setPosts(data); //
-    // });
-
-    //入力リセット
-    setTitle("");
-    setContent("");
-  };
-
-  //削除
-  const deletePost = async(id)=>{
-    await fetch(`${API_URL}/${id}`,{
-      method:"DELETE",
-    });
-
-    //投稿一覧再取得 画面を最新化する為
-    getPosts();
-  };
-
-  //編集
-  const startEdit = (post) =>{
-    // console.log(post);
-    setEditId(post.id); //今この投稿編集中
-    setTitle(post.title); 
-    setContent(post.content); //内容表示
-    setIsModalOpen(true); //モーダル表示
-  };
-
-// 更新
-  const updatePost = async()=>{
-    await fetch(`${API_URL}/${editId}`,{
-      method:"PUT",
-      headers:{
-        "Content-Type":"application/json", //jsをJSON変換し、データを送る本体
-      },
-      body:JSON.stringify({ //jsをJSON変換し、データを送る本体
-        title,
-        content,
-      }),
-    });
-
-    //再取得
-    getPosts();
-    // .then((res)=>res.json()) //APIレスポンスをJSON変換
-    // .then((data)=>{
-    //   setPosts(data);
-    // });
-    //リセット
-    setEditId(null); //編集モード終了　編集対処ID
-    //文字入力
-    setTitle("");
-    setContent("");
-    setIsModalOpen(false); //モーダル非表示
-  }
+    sendPost,
+    deletePost,
+    startEdit,
+    updatePost
+  } =usePosts();
+  
   return (
     <div className="App" id='main'>
+      {/* UI コンポーネント */}
       <Home />
-      {/* タイトル出力*/}
-      {/* 投稿内容出力*/}
-      {/* 現在編集中かどうか */}
+      {/* タイトル・投稿内容・編集出力*/}
     <PostForm 
         editId={editId}
         title={title}

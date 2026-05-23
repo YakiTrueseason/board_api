@@ -1,3 +1,5 @@
+//モーダル
+
 import React from 'react'
 
 function EditModal({isModalOpen,title,setTitle,content,setContent,updatePost,setIsModalOpen}) {
