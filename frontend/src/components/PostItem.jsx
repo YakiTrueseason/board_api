@@ -1,4 +1,4 @@
-//１件表示
+//投稿１件表示
 
 import React from 'react'
 

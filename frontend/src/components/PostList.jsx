@@ -1,4 +1,5 @@
-//一覧表示
+//投稿一覧表示
+
 import React from 'react'
 import PostItem from './PostItem'
 
