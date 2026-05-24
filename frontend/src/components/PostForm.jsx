@@ -1,4 +1,4 @@
-//フォーム
+//フォーム　入力
 
 import React from 'react'
 

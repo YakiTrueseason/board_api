@@ -1,4 +1,4 @@
-//hooks分離　custom hook化
+//hooks分離　custom hook化 データ投稿管理専門
 
 import { useEffect,useState } from "react";
 import {
@@ -15,14 +15,20 @@ export function usePosts(){
     const [posts,setPosts] = useState([]);
     const[editId,setEditId] = useState(null); //今どの投稿を編集しているか
     const [isModalOpen,setIsModalOpen] = useState(false); //モーダル状態
+    const[loading,setLoading] = useState(false); 
+    const[error,setError] = useState(null); //前回のエラーを消し、解除する為
 
     // 投稿取得専用共通関数
     const getPosts = async ()=>{
         try{ //とりあえず実行
+        setLoading(true); //読み込み中．．．表示
         const data = await getPostsApi(); //apiから帰ってきたデータをjson形式に変換
         setPosts(data); //データを取り出す 
         }catch(error){ //エラー捕獲
         console.log(error);
+        setError("投稿取得失敗");
+        }finally{
+            setLoading(false); //投稿一覧表示
         }
     };
       useEffect(() => { // 初回実行
@@ -38,6 +44,7 @@ const sendPost = async () => {
         setContent("");
     }catch(error){ //エラー捕獲
     console.log(error); 
+    setError("投稿取得失敗");
     }
 };
 
@@ -95,6 +102,8 @@ return{
     content,
     editId,
     isModalOpen,
+    loading,
+    error,
 
     setTitle,
     setContent,
