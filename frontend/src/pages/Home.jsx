@@ -8,6 +8,7 @@ import EditModal from '../components/EditModal';
 import PostForm from '../components/PostForm';
 import { usePosts } from '../hooks/usePosts';
 import ErrorMessage from '../components/ErrorMessage';
+import { Link } from 'react-router-dom';
 
 
 function Home  ()  {
@@ -33,6 +34,9 @@ const{
     return (
 <div className="App" id='main'>      
         <h1>掲示板API</h1>
+        <Link to="/login">
+        ログイン
+        </Link>
             <TodoList />
             <SignIn />
                {/* UI コンポーネント */}

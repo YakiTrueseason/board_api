@@ -1,8 +1,10 @@
-#fastAPI
+#fastAPI処理
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware #reactからアクセス許可する機能[]
 from database import SessionLocal,DBPost
+from schemas import (UserCreate,PostCreate)
+from models import User,DBPost
 
 app = FastAPI() #appに機能追加していく
 
@@ -39,6 +41,35 @@ def get_posts():
     posts = db.query(DBPost).all()
     db.close()
     return posts
+
+#　ユーザー作成
+@app.post("/signup")
+def signup(user:UserCreate):
+    db = SessionLocal()
+    new_user = User(
+        username=user.username,
+        password=user.password
+    )
+    db.add(new_user)
+    db.commit()
+    db.close()
+
+    return{"message":"作成成功"}
+
+#ログイン　認証
+@app.post("/login")
+def login(user:UserCreate):
+    db=SessionLocal()
+    db_user = db.query(User).filter(
+        User.username == user.username
+    ).first()
+    if not db_user:
+        return{"error":"存在しない"}
+    if db_user.password != user.password:
+        return{"error":"パスワードが違う"}
+    return{
+        "token":"sample-token"
+    }
 
 #投稿成功
 @app.post("/posts")#JSONを受け取りPOST型に変換、配列に追加し返す

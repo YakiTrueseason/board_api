@@ -11,8 +11,8 @@ DATABASE_URL = "sqlite:///./test.db"
 engine = create_engine(DATABASE_URL)
 #保存処理
 SessionLocal = sessionmaker(bind=engine)
-
-Base = declarative_base() #テーブルを作るための親クラス
+#テーブルを作るための親クラス
+Base = declarative_base() 
 #テーブル定義
 class DBPost(Base):
     __tablename__ = "posts"
@@ -20,6 +20,14 @@ class DBPost(Base):
     id = Column(Integer,primary_key=True)
     title = Column(String)
     content = Column(String)
+
+#
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer,primary_key=True)
+    username = Column(String,unique=True)
+    password = Column(String)
 #テーブル作成
 Base.metadata.create_all(bind=engine) #定義したテーブルを実際のDBに作る　
 
