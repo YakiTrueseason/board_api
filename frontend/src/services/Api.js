@@ -1,7 +1,8 @@
 //API通信
 
 //API_URL定数化
-const API_URL = "http://localhost:8000";
+const API_URL = "https://board-api-qji1.onrender.com/docs";
+//http://localhost:8000
 
 // 投稿取得専用共通関数
 const request = async(
