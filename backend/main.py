@@ -87,7 +87,6 @@ def create_post(post: PostCreate):
     db.commit() #DBに保存
     db.refresh(new_post) #DB最新状態を取得
     db.close() #DB接続終了
-    # current_id += 1
     return new_post#削除してもズレない
 
 #更新機能
@@ -110,10 +109,6 @@ def update_post(id: int,post: PostCreate): #どの投稿をどんな内容に変
     #DB接続終了
     db.close()
     return db_post
-    # if id < len(posts): #そのIDが存在するか確認
-        # posts[id] = post
-        # return post #更新後のデータをそのまま返す
-    # return {"error":"存在しない"}
 #投稿削除
 @app.delete("/posts/{id}")
 def delete_post(id: int):

@@ -47,19 +47,6 @@ const sendPost = async () => {
     setError("投稿取得失敗");
     }
 };
-
-    // //投稿一覧再取得
-    // getPosts();
-//     // .then((res)=>res.json()) //APIレスポンスをJSON変換
-//     // .then((data)=>{ 
-//     //   setPosts(data); //
-//     // });
-
-//     //入力リセット
-//     setTitle("");
-//     setContent("");
-//   };
-
   //削除
 const deletePost = async(id)=>{
     await deletePostsApi(id);
@@ -69,7 +56,6 @@ const deletePost = async(id)=>{
 
   //編集
 const startEdit = (post) =>{
-    // console.log(post);
     setEditId(post.id); //今この投稿編集中
     setTitle(post.title); 
     setContent(post.content); //内容表示
@@ -85,11 +71,7 @@ const updatePost = async()=>{
 
     //再取得
     getPosts();
-//     // .then((res)=>res.json()) //APIレスポンスをJSON変換
-//     // .then((data)=>{
-//     //   setPosts(data);
-//     // });
-//     //リセット
+
     setEditId(null); //編集モード終了　編集対処ID
     //文字入力
     setTitle("");
