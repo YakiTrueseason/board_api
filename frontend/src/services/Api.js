@@ -1,8 +1,9 @@
 //API通信
 
 //API_URL定数化
-const API_URL = "https://board-api-qji1.onrender.com";
-//http://localhost:8000
+const API_URL = "http://localhost:8000";
+//http://localhost:8000 開発環境
+//https://board-api-qji1.onrender.com　本番　vercel
 
 // 投稿取得専用共通関数
 const request = async(

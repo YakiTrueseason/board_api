@@ -8,7 +8,7 @@ return (
     <div>
         {/* 投稿入力フォーム */}
         {/* タイトル出力*/}
-    <input type="text"
+    <input className='border-teal-500 m-5 p-2 rounded' type="text"
         placeholder='タイトル'
         value={title}
         onChange={(e) =>
@@ -16,7 +16,7 @@ return (
     />
 
     {/* 投稿内容出力*/}
-    <input type="text"
+    <input className='border p-2 w-80 rounded' type="text"
         placeholder='内容'
         value={content}
         onChange={(e) =>
@@ -26,9 +26,9 @@ return (
 
       {/* 現在編集中かどうか */}
     {editId !== null ? ( 
-        <button onClick={updatePost}>更新</button>
+        <button className='bg-blue-400 m-2 py-1 rounded' onClick={updatePost}>更新</button>
     ):(
-            <button onClick={sendPost}>送信</button>
+        <button className='bg-blue-400 px-3 py-1 rounded' onClick={sendPost}>送信</button>
     )}
 
     </div>
