@@ -3,7 +3,7 @@ import React from 'react'
 function SignIn() {
     return (
         <div>
-            <button>Google</button>
+            {/* <button>Google</button> */}
         </div>
     )
 }

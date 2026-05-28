@@ -32,11 +32,11 @@ const{
     updatePost
 } =usePosts();
     return (
-<div className="App" id='main'>      
-        <h1>掲示板API</h1>
+<div className="min-h-screen  p-6" id='main'>      
+        <h1 className='text-4xl font-bold text-blue-500'>掲示板API</h1>
         <Link to="/login">
         ログイン
-        </Link>
+            </Link>
             <TodoList />
             <SignIn />
                {/* UI コンポーネント */}
@@ -54,7 +54,7 @@ const{
 
     {/* タイトルと内容表示とローディング とエラー*/}
     {loading ?(
-        <p>読み込み中．．．</p>
+        <p className='text-center'>読み込み中．．．</p>
     ):error ?(
         <ErrorMessage message={error}/>
     ):(
