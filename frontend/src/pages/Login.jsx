@@ -34,6 +34,7 @@ function Login() {
 return (
     <div>
         <input 
+            className='h-64 flex justify-center items-center text-center bg-gray-100'
             type='text'
             placeholder='ユーザ名'
             value={username}
@@ -42,6 +43,7 @@ return (
             }
         />
         <input 
+            className='h-64 flex justify-center items-center text-center bg-gray-100'
             type='password'
             placeholder='パスワード'
             value={password}
@@ -49,7 +51,7 @@ return (
                 setPassword(e.target.value)
             }
         />
-        <button onClick={handleLogin}>ログイン</button><br />
+        <button className='shawdow bg-blue-400' onClick={handleLogin}>ログイン</button><br />
         <Link to="/signup">新規登録</Link>
     </div>
 )

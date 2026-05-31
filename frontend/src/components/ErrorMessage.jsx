@@ -4,7 +4,7 @@ import React from 'react'
 
 function ErrorMessage({message}) {
 return (
-    <div>
+    <div className='text-red-500 text-center'>
         <p>{message}</p>
     </div>
 )
