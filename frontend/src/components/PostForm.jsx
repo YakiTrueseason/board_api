@@ -28,7 +28,7 @@ return (
     {editId !== null ? ( 
         <button className='bg-blue-400 m-2 py-1 rounded' onClick={updatePost}>更新</button>
     ):(
-        <button className='bg-blue-400 px-3 py-1 rounded' onClick={sendPost}>送信</button>
+        <button className='bg-blue-400 px-5 py-1 mb-4  rounded' onClick={sendPost}>送信</button>
     )}
 
     </div>

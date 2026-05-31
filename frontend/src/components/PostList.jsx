@@ -4,6 +4,14 @@ import React from 'react'
 import PostItem from './PostItem'
 
 function PostList({posts,deletePost,startEdit}) {
+    if(posts.length === 0){
+        return(
+            <div className='bg-cyan-300 p-6 rounded shadow text-center'>
+                <p>投稿がありません</p>
+                <p className='mt-2'>最初の投稿を作成してみましょう</p>
+            </div>
+        )
+    }
 return (
     <div>
         {/* 投稿一覧管理  配列*/}

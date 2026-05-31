@@ -1,7 +1,6 @@
 //画面全体表示　UI
 import '../App.css';
 import React from 'react'
-import TodoList from "../components/Todolist"
 import SignIn from "../components/SignIn"
 import PostList from '../components/PostList';
 import EditModal from '../components/EditModal';
@@ -37,7 +36,6 @@ const{
         <Link to="/login">
         ログイン
             </Link>
-            <TodoList />
             <SignIn />
                {/* UI コンポーネント */}
       {/* <Home /> */}
