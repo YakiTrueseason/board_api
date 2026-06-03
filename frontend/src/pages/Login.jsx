@@ -34,7 +34,7 @@ function Login() {
 return (
     <div>
         <input 
-            className='h-64 flex justify-center items-center text-center bg-gray-100'
+            // className='h-64 flex justify-center items-center text-center bg-gray-100'
             type='text'
             placeholder='ユーザ名'
             value={username}
@@ -43,7 +43,7 @@ return (
             }
         />
         <input 
-            className='h-64 flex justify-center items-center text-center bg-gray-100'
+            // className='h-64 flex justify-center items-center text-center bg-gray-100'
             type='password'
             placeholder='パスワード'
             value={password}
