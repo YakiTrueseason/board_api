@@ -21,7 +21,6 @@ function Signup() {
 }
 return (
     <div>
-        <h1>新規登録</h1>
         <input 
             type='text'
             placeholder='ユーザ名'
@@ -38,7 +37,7 @@ return (
                 setPassword(e.target.value)
             }
         />
-        <button onClick={handleSignup}>登録</button><br />
+        <button className='shadow bg-blue-400' onClick={handleSignup}>登録</button><br />
         <Link to="/login">ログイン</Link>
     </div>
 )
