@@ -10,13 +10,15 @@ return (
         <h2 className='text-xl font-bold'>{post.title}</h2>
         <p className=' mt-2'>{post.content}</p>
         {/* 削除ボタン */}
-        <button className='bg-blue-300 max fixed px-3 right-10 rounded' onClick={() => deletePost(post.id)}>
-            削除
-        </button>
-        {/* 編集 */}
-        <button className='bg-blue-300 auto flex px-3 justify-start rounded' onClick={()=> startEdit(post)}>
-            編集
-        </button>
+        <div className='flex justify-between mt-3'>
+            <button className='bg-blue-300 px-3 py-1 rounded hover:scale-105 transition' onClick={() => deletePost(post.id)}>
+                削除
+            </button>
+            {/* 編集 */}
+            <button className='bg-blue-300 px-3 py-1 rounded hover:scale-105 transition' onClick={()=> startEdit(post)}>
+                編集
+            </button>
+        </div>
         </div>
     </div>
 )
