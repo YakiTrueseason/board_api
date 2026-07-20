@@ -1,7 +1,7 @@
 //API通信
 
 //API_URL定数化
-const API_URL = "https://board-api-qji1.onrender.com";
+const API_URL = "http://localhost:8000";
 //http://localhost:8000 開発環境
 //https://board-api-qji1.onrender.com　本番　vercel
 
@@ -11,11 +11,17 @@ const request = async(
     method = "GET",
     body = null
 ) =>{
+// 毎回最新のトークンを取得
+const token = localStorage.getItem("token");
+const headers = {
+    "Content-Type":"application/json",
+};
+if(token){
+    headers["Authorization"] = `Bearer ${token}`;
+}
 const option = {
     method,
-    headers:{
-        "Content-Type":"application/json"
-    }
+    headers
 };
 if(body){
     option.body = JSON.stringify(body);
@@ -70,7 +76,8 @@ export const createPostsApi = async (
         title,content
     });
     };
-    //削除
+
+//削除
 export const deletePostsApi = async(id)=>{
     return await request(
         `/posts/${id}`,
@@ -81,7 +88,7 @@ export const deletePostsApi = async(id)=>{
 // 更新
 export  const updatePostsApi = async(
     id,
-    // editId,
+    editId,
     title,
     content
 )=>{

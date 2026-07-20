@@ -1,15 +1,14 @@
 #DBテーブル定義
-from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column,Integer,String
-
-Base = declarative_base()
+from database import Base
 
 class DBPost(Base):
     __tablename__ = "posts"
 
     id = Column(Integer,primary_key=True)
-    title = Column(String,unique=True)
+    title = Column(String)
     content = Column(String)
+    username = Column(String)
 
 class User(Base):
     __tablename__ = "users"

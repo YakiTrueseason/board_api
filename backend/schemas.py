@@ -1,4 +1,4 @@
-#pydantic(入力チェック)
+#pydantic(入力チェック) API用の型
 from pydantic import BaseModel
 
 class PostCreate(BaseModel):

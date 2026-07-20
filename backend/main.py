@@ -2,10 +2,21 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware #reactからアクセス許可する機能[]
-from database import SessionLocal,DBPost
+from database import SessionLocal,Base,engine
 from schemas import (UserCreate,PostCreate)
 from models import User,DBPost
 from fastapi.middleware.cors import CORSMiddleware
+from hash.auth import (
+    verify_password,
+    hash_password,
+    create_access_token,
+    verify_token
+    )
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends
+
+#テーブル作成
+Base.metadata.create_all(bind=engine) #定義したテーブルを実際のDBに作る　
 
 app = FastAPI() #appに機能追加していく
 
@@ -49,12 +60,11 @@ def signup(user:UserCreate):
     db = SessionLocal()
     new_user = User(
         username=user.username,
-        password=user.password
+        password=hash_password(user.password)
     )
     db.add(new_user)
     db.commit()
     db.close()
-
     return{"message":"作成成功"}
 
 #ログイン　認証
@@ -66,28 +76,51 @@ def login(user:UserCreate):
     ).first()
     if not db_user:
         return{"error":"存在しない"}
-    if db_user.password != user.password:
+    if not verify_password(
+        user.password,
+        db_user.password
+    ):
         return{"error":"パスワードが違う"}
-    return{
-        "token":"sample-token"
-    }
+    # JWT作成
+    token = create_access_token(
+            {
+                "sub":db_user.username
+            }
+        )
+    #JWTを返す
+    return {
+            "access_token":token,
+            "token_type":"bearer"
+        }
+
+# JWT 取り出す
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="login"
+)
 
 #投稿成功
 @app.post("/posts")#JSONを受け取りPOST型に変換、配列に追加し返す
-def create_post(post: PostCreate):
-    # global current_id
+def create_post(
+    post: PostCreate,
+    token:str = Depends(oauth2_scheme)
+    ):
+    payload = verify_token(token)
+    username = payload["sub"]
+    print(username)
+
     db = SessionLocal()
 
     new_post = DBPost(
         title=post.title,
-        content=post.content
+        content=post.content,
+        username=username
     )
 
-    # posts.append(new_post)
     db.add(new_post)#保存予約
     db.commit() #DBに保存
     db.refresh(new_post) #DB最新状態を取得
     db.close() #DB接続終了
+
     return new_post#削除してもズレない
 
 #更新機能
@@ -126,11 +159,6 @@ def delete_post(id: int):
     db.close()
 
     return{"message" : "削除成功"}
-    # for i,post in enumerate(posts):
-        # if post.id == id:#配列のチェック　指定番号削除
-            # posts.pop(i)
-            # return{"message":"削除成功"}#IDを探して削除出来るようにする
-    # return{"error":"存在しない"}#範囲外ならエラー
 
 # デバック　開発確認用API
 @app.get("/debug")
@@ -140,3 +168,11 @@ def debug_db():
     posts = db.query(DBPost).all()
     db.close()
     return posts
+
+# データベース ハッシュ化　確認
+@app.get("/users")
+def get_user():
+    db = SessionLocal()
+    users = db.query(User).all()
+    db.close()
+    return users
