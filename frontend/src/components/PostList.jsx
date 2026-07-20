@@ -3,7 +3,7 @@
 import React from 'react'
 import PostItem from './PostItem'
 
-function PostList({posts,deletePost,startEdit}) {
+function PostList({posts,deletePost,startEdit,loginUser}) {
     if(posts.length === 0){
         return(
             <div className='bg-cyan-300 p-6 rounded shadow text-center'>
@@ -21,10 +21,10 @@ return (
             post={post} //親から子に一方的にデータを渡す
             deletePost={deletePost}
             startEdit={startEdit}
+            loginUser={loginUser}
             />
         ))}
     </div>
-    
 )
 }
 

@@ -14,18 +14,20 @@ from hash.auth import (
     )
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends
+from fastapi import HTTPException
 
-#テーブル作成
-Base.metadata.create_all(bind=engine) #定義したテーブルを実際のDBに作る　
+#テーブル作成 定義したテーブルを実際のDBに作る　
+Base.metadata.create_all(bind=engine) 
 
-app = FastAPI() #appに機能追加していく
+#appに機能追加していく
+app = FastAPI() 
 
 #Reactからアクセス許可
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    #ReactURLのURL
-    allow_credentials=True, #ログイン情報・Cookie許可
+    #ReactURLのURL ログイン情報・Cookie許可
+    allow_credentials=True, 
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -41,7 +43,8 @@ def hello():
 class PostCreate(BaseModel):
     title:str
     content:str
-class PostResponse(BaseModel):#自動でJSON変換 IDはサーバー側で作る
+#自動でJSON変換 IDはサーバー側で作る
+class PostResponse(BaseModel):
     id: int
     title: str
     content: str
@@ -122,10 +125,28 @@ def create_post(
     db.close() #DB接続終了
 
     return new_post#削除してもズレない
+    
+# ログイン中のユーザー情報を取得
+@app.get("/me")
+def get_me(
+    token:str = Depends(oauth2_scheme)
+):
+    payload = verify_token(token)
+    return {
+        "username":payload["sub"]
+    }
 
 #更新機能
 @app.put("/posts/{id}") 
-def update_post(id: int,post: PostCreate): #どの投稿をどんな内容に変えるかを受け取る
+#どの投稿をどんな内容に変えるかを受け取る
+def update_post(
+    id: int,
+    post: PostCreate,
+    token:str = Depends(oauth2_scheme)
+): 
+    payload = verify_token(token)
+    username = payload["sub"]
+
     db = SessionLocal() #SQLite接続開始
     #DB検索
     db_post = db.query(DBPost).filter(DBPost.id == id).first()
@@ -133,6 +154,13 @@ def update_post(id: int,post: PostCreate): #どの投稿をどんな内容に変
     if not db_post:
         db.close()
         return{"error":"存在しない"}
+    # 本人確認
+    if db_post.username != username:
+        db.close()
+        raise HTTPException(
+            status_code=403,
+            detail="他人の投稿は編集できません"
+        )
     #更新　pythonオブジェクト変更
     db_post.title = post.title
     db_post.content = post.content
@@ -143,9 +171,14 @@ def update_post(id: int,post: PostCreate): #どの投稿をどんな内容に変
     #DB接続終了
     db.close()
     return db_post
+
 #投稿削除
 @app.delete("/posts/{id}")
-def delete_post(id: int):
+def delete_post(id: int,token:str = Depends(oauth2_scheme)): 
+
+    payload = verify_token(token)
+    username = payload["sub"]
+
     db = SessionLocal() #SQLite接続開始
     #テーブル操作を開始しidを一致検索、最初の1件を取得する
     db_post = db.query(DBPost).filter(DBPost.id == id).first()
@@ -153,6 +186,13 @@ def delete_post(id: int):
     if not db_post:
         db.close()
         return{"error":"存在しない"}
+    # 本人確認
+    if db_post.username != username:
+        db.close()
+        raise HTTPException(
+            status_code=403,
+            detail="他人の投稿は削除できません"
+        )
     #削除予約
     db.delete(db_post)
     db.commit()
