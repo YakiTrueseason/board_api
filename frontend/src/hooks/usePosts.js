@@ -5,11 +5,11 @@ import {
     getPostsApi,
     createPostsApi,
     deletePostsApi,
-    updatePostsApi
+    updatePostsApi,
+    getMeApi
 }from '../services/Api';
 
 export function usePosts(){
-    // const [message, setMessage] = useState("");
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [posts,setPosts] = useState([]);
@@ -17,6 +17,7 @@ export function usePosts(){
     const [isModalOpen,setIsModalOpen] = useState(false); //モーダル状態
     const[loading,setLoading] = useState(false); 
     const[error,setError] = useState(null); //前回のエラーを消し、解除する為
+    const [loginUser,setLoginUser] = useState("");
 
     // 投稿取得専用共通関数
     const getPosts = async ()=>{
@@ -31,8 +32,20 @@ export function usePosts(){
             setLoading(false); //投稿一覧表示
         }
     };
-      useEffect(() => { // 初回実行
+
+// ログイン中のユーザー情報取得
+const getMe = async ()=>{
+    try{
+        const data = await getMeApi();
+        setLoginUser(data.username);
+    }catch(error){
+        console.log(error)
+    }
+};
+
+    useEffect(() => { // 初回実行
     getPosts(); //API取得
+    getMe();
   }, []); //最初の一回実行
 
 //投稿処理
@@ -47,14 +60,14 @@ const sendPost = async () => {
     setError("投稿取得失敗");
     }
 };
-  //削除
+//削除
 const deletePost = async(id)=>{
     await deletePostsApi(id);
     //投稿一覧再取得 画面を最新化する為
     getPosts();
 };
 
-  //編集
+//編集
 const startEdit = (post) =>{
     setEditId(post.id); //今この投稿編集中
     setTitle(post.title); 
@@ -63,20 +76,23 @@ const startEdit = (post) =>{
 };
 // 更新
 const updatePost = async()=>{
-    await updatePostsApi(
-    editId,
-    title,
-    content
-    );
-
+    try{
+        await  updatePostsApi(
+                editId,
+                title,
+                content
+        );    
     //再取得
-    getPosts();
+    await getPosts();
 
     setEditId(null); //編集モード終了　編集対処ID
     //文字入力
     setTitle("");
     setContent("");
     setIsModalOpen(false); //モーダル非表示
+    }catch(error){
+        alert(error.message);
+    }
 };
 return{
     posts,
@@ -94,6 +110,8 @@ return{
     sendPost,
     deletePost,
     startEdit,
-    updatePost
+    updatePost,
+
+    loginUser
 };
 }

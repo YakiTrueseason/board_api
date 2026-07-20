@@ -7,11 +7,9 @@ import EditModal from '../components/EditModal';
 import PostForm from '../components/PostForm';
 import { usePosts } from '../hooks/usePosts';
 import ErrorMessage from '../components/ErrorMessage';
-// import { Link } from 'react-router-dom';
 
 
 function Home  ()  {
-    // const { todos } = useTodos();
 const{
     posts,
     title,
@@ -28,16 +26,13 @@ const{
     sendPost,
     deletePost,
     startEdit,
-    updatePost
+    updatePost,
+
+    loginUser
 } =usePosts();
     return (
 <div className="min-h-screen  p-6" id='main'>      
         <h1 className='text-4xl font-bold text-blue-500'>掲示板API</h1>
-        {/* <Link 
-        to="/login"
-        className='bg-white text-blue-600 px-5 py-2 rounded-lg hover:scale-105 transition'>
-        ログイン
-        </Link> */}
             <SignIn />
                {/* UI コンポーネント */}
       {/* <Home /> */}
@@ -62,6 +57,7 @@ const{
         posts={posts}
         deletePost={deletePost}
         startEdit={startEdit}
+        loginUser={loginUser}
     />
     )}
 

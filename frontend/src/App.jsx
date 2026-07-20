@@ -5,6 +5,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Navbar from './components/Navbar';
 import Logout from './pages/Logout';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   
@@ -16,13 +17,35 @@ function App() {
 
     <Routes>
 
-    <Route path='/' element={<Home />}/>
+    <Route 
+      path='/'
+      element={
+        <ProtectedRoute>
+        <Home />
+        </ProtectedRoute>
+      }
+    />
 
-    <Route path='/signup' element={<Signup />}/>
+    <Route 
+      path='/signup' 
+      element={
+        <Signup />}
+    />
 
-    <Route path='/login' element={<Login />}/>
+    <Route 
+      path='/login' 
+      element={
+        <Login />}
+    />
 
-    <Route path='/logout' element={<Logout/>}/>
+    <Route 
+      path='/logout'
+      element={
+        <ProtectedRoute>
+        <Logout/>
+        </ProtectedRoute>
+      }
+    />
 
     </Routes>
 
