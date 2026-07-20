@@ -17,11 +17,11 @@ function Login() {
     );
     console.log(data);
     //ログイン成功
-    if(data.token){
+    if(data.access_token){
         //token保存
         localStorage.setItem(
             "token",
-            data.token
+            data.access_token
         );
         //Homeへ移動
         navigate("/");

@@ -14,6 +14,9 @@ return (
                 <Link 
                 to="/signup"
                 className="bg-white text-blue-600 px-5 py-2 rounded-lg hover:scale-105 transition">Signup</Link>
+                <Link
+                to="/logout"
+                className="bg-white text-blue-600 px-5 py-2 rounded-lg hover:scale-105 transition">Signout</Link>
             </div>
         </nav>
     </div>
