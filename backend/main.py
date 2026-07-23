@@ -15,6 +15,11 @@ from hash.auth import (
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends
 from fastapi import HTTPException
+from fastapi import UploadFile,File
+from fastapi.staticfiles import StaticFiles
+import shutil
+import os
+import uuid
 
 #テーブル作成 定義したテーブルを実際のDBに作る　
 Base.metadata.create_all(bind=engine) 
@@ -39,10 +44,6 @@ def hello():
 # posts = []#配列を投稿で保存　DBを使う
 # current_id = 0 #ID管理用
 
-#データ型
-class PostCreate(BaseModel):
-    title:str
-    content:str
 #自動でJSON変換 IDはサーバー側で作る
 class PostResponse(BaseModel):
     id: int
@@ -116,7 +117,8 @@ def create_post(
     new_post = DBPost(
         title=post.title,
         content=post.content,
-        username=username
+        username=username,
+        image_path=post.image_path
     )
 
     db.add(new_post)#保存予約
@@ -199,6 +201,40 @@ def delete_post(id: int,token:str = Depends(oauth2_scheme)):
     db.close()
 
     return{"message" : "削除成功"}
+
+
+# フォルダー自動作成
+if not os.path.exists("uploads"):
+    os.makedirs("uploads")
+
+# 画像表示
+app.mount(
+    "/uploads",
+    StaticFiles(directory="uploads"),
+    name="uploads"
+)
+
+# 画像アップロード
+@app.post("/upload")
+def upload_image(
+    file:UploadFile = File(...)
+):
+    # 拡張子取得
+    ext = file.filename.split(".")[-1]
+    # ファイル名を重複しないようにする
+    filename = f"{uuid.uuid4()}.{ext}"
+    # 保存先
+    filepath = os.path.join(
+        "uploads",
+        filename
+    )
+    # 保存
+    with open(filepath,"wb")as buffer:
+        shutil.copyfileobj(
+            file.file,
+            buffer
+        )
+    return{"image_path":f"/uploads/{filename}"}
 
 # デバック　開発確認用API
 @app.get("/debug")

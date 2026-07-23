@@ -1,7 +1,7 @@
 //API通信
 
 //API_URL定数化
-const API_URL = "https://board-api-qji1.onrender.com";
+export const API_URL = "https://board-api-qji1.onrender.com";
 //http://localhost:8000 開発環境
 //https://board-api-qji1.onrender.com　本番　vercel
 
@@ -79,11 +79,11 @@ export const getPostsApi = async() =>{
 
 //投稿処理
 export const createPostsApi = async (
-    title,content
+    title,content,image_path
 ) => { 
     return await request("/posts","POST",
     {
-        title,content
+        title,content,image_path
     });
     };
 
@@ -110,3 +110,22 @@ export  const updatePostsApi = async(
     }
 );
     };
+// 画像
+export const uploadImageApi = async(image) =>{
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append(
+        "file",image
+    );
+    const res = await fetch(
+        `${API_URL}/upload`,
+        {
+            method:"POST",
+            headers:{
+                Authorization:`Bearer${token}`
+            },
+            body:formData
+        }
+    );
+    return await res.json();
+};

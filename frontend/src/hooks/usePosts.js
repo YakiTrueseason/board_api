@@ -6,7 +6,8 @@ import {
     createPostsApi,
     deletePostsApi,
     updatePostsApi,
-    getMeApi
+    getMeApi,
+    uploadImageApi
 }from '../services/Api';
 
 export function usePosts(){
@@ -18,6 +19,7 @@ export function usePosts(){
     const[loading,setLoading] = useState(false); 
     const[error,setError] = useState(null); //前回のエラーを消し、解除する為
     const [loginUser,setLoginUser] = useState("");
+    const [image,setImage] = useState(null);
 
     // 投稿取得専用共通関数
     const getPosts = async ()=>{
@@ -50,11 +52,20 @@ const getMe = async ()=>{
 
 //投稿処理
 const sendPost = async () => { 
-    try{ //とりあえず実行
-    await createPostsApi(title,content)
+    //とりあえず実行
+    try{ 
+        let imagePath = null;
+    // 画像が選択されていたらアップロード
+    if(image){
+        const uploadResult = await uploadImageApi(image);
+        imagePath = uploadResult.image_path;
+    }
+    // 投稿作成
+    await createPostsApi(title,content,imagePath)
         getPosts();
         setTitle("");
         setContent("");
+        setImage(null);
     }catch(error){ //エラー捕獲
     console.log(error); 
     setError("投稿取得失敗");
@@ -112,6 +123,8 @@ return{
     startEdit,
     updatePost,
 
-    loginUser
+    loginUser,
+    image,
+    setImage
 };
 }

@@ -28,7 +28,9 @@ const{
     startEdit,
     updatePost,
 
-    loginUser
+    loginUser,
+    image,
+    setImage
 } =usePosts();
     return (
 <div className="min-h-screen  p-6" id='main'>      
@@ -45,6 +47,8 @@ const{
         setContent={setContent}
         updatePost={updatePost}
         sendPost={sendPost}
+        image={image}
+        setImage={setImage}
     />
 
     {/* タイトルと内容表示とローディング とエラー*/}
