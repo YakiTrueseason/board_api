@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-function PostForm({title,setTitle,content,setContent,editId,updatePost,sendPost}) {
+function PostForm({title,setTitle,content,setContent,editId,updatePost,sendPost,setImage}) {
 
 return (
     <div>
@@ -22,6 +22,11 @@ return (
         onChange={(e) =>
         setContent(e.target.value)}
     />
+
+    <input 
+        type="file" 
+        accept="image/*" 
+        onChange={(e)=>setImage(e.target.files[0])} />
     <br></br>
 
       {/* 現在編集中かどうか */}
