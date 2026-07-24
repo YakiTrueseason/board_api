@@ -2,7 +2,19 @@
 
 import React from 'react'
 
-function PostForm({title,setTitle,content,setContent,editId,updatePost,sendPost,setImage}) {
+function PostForm({
+    title,
+    setTitle,
+    content,
+    setContent,
+    editId,
+    updatePost,
+    sendPost,
+    image,
+    setImage,
+    preview,
+    setPreview
+}) {
 
 return (
     <div>
@@ -23,10 +35,23 @@ return (
         setContent(e.target.value)}
     />
 
+    {/* 画像出力 */}
     <input 
         type="file" 
         accept="image/*" 
-        onChange={(e)=>setImage(e.target.files[0])} />
+        onChange={(e)=>{
+            const file = e.target.files[0];
+            setImage(file);
+            if(file){
+            setPreview(URL.createObjectURL(file));
+            }}
+        }
+    />
+    
+    {/* 画像プレビュー */}
+    {preview &&(
+        <img src={preview} alt="プレビュー" className='mt-4 rounded-lg w-64 border' />
+    )}
     <br></br>
 
       {/* 現在編集中かどうか */}

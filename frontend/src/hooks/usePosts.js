@@ -20,6 +20,8 @@ export function usePosts(){
     const[error,setError] = useState(null); //前回のエラーを消し、解除する為
     const [loginUser,setLoginUser] = useState("");
     const [image,setImage] = useState(null);
+    const [preview,setPreview] = useState("");
+    const [currentImage,setCurrentImage] = useState("");
 
     // 投稿取得専用共通関数
     const getPosts = async ()=>{
@@ -83,15 +85,28 @@ const startEdit = (post) =>{
     setEditId(post.id); //今この投稿編集中
     setTitle(post.title); 
     setContent(post.content); //内容表示
+    setCurrentImage(post.image_path); //現在の画像
+    setPreview(post.image_path); //プレビュー表示
+    setImage(null);
     setIsModalOpen(true); //モーダル表示
 };
+
 // 更新
 const updatePost = async()=>{
     try{
+    // 現在の画像を初期値にする
+    let imagePath = currentImage;
+    // 新しい画像が選択されたらアップロード
+    if(image){
+        const uploadResult = 
+            await uploadImageApi(image);
+        imagePath = uploadResult.image_path;
+    }
         await  updatePostsApi(
                 editId,
                 title,
-                content
+                content,
+                imagePath
         );    
     //再取得
     await getPosts();
@@ -124,7 +139,12 @@ return{
     updatePost,
 
     loginUser,
+
     image,
-    setImage
+    setImage,
+    preview,
+    setPreview,
+    currentImage,
+    setCurrentImage
 };
 }
