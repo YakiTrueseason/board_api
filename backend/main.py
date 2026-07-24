@@ -44,12 +44,6 @@ def hello():
 # posts = []#配列を投稿で保存　DBを使う
 # current_id = 0 #ID管理用
 
-#自動でJSON変換 IDはサーバー側で作る
-class PostResponse(BaseModel):
-    id: int
-    title: str
-    content: str
-
 #一覧取得
 @app.get("/posts") #GET/posts(配列)　全投稿を返す
 def get_posts():
@@ -163,9 +157,23 @@ def update_post(
             status_code=403,
             detail="他人の投稿は編集できません"
         )
+    # 新しい画像に変更されたら古い画像を削除
+    if(
+        post.image_path
+        and
+        db_post.image_path
+        and
+        post.image_path != db_post.image_path
+    ):
+        old_file = db_post.image_path.replace(
+            "/uploads/","uploads/"
+        )
+        if os.path.exists(old_file):
+            os.remove(old_file)
     #更新　pythonオブジェクト変更
     db_post.title = post.title
     db_post.content = post.content
+    db_post.image_path = post.image_path
     #DB保存　更新確定
     db.commit()
     #最新状態取得
@@ -182,8 +190,15 @@ def delete_post(id: int,token:str = Depends(oauth2_scheme)):
     username = payload["sub"]
 
     db = SessionLocal() #SQLite接続開始
+    
     #テーブル操作を開始しidを一致検索、最初の1件を取得する
     db_post = db.query(DBPost).filter(DBPost.id == id).first()
+    # 画像があれば削除
+    if db_post.image_path:
+        image_file = db_post.image_path.replace("/uploads/","uploads/")
+
+        if os.path.exists(image_file):
+            os.remove(image_file)
     #該当データ無いか？
     if not db_post:
         db.close()

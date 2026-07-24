@@ -1,7 +1,7 @@
 //API通信
 
 //API_URL定数化
-export const API_URL = "https://board-api-qji1.onrender.com";
+export const API_URL = "http://localhost:8000";
 //http://localhost:8000 開発環境
 //https://board-api-qji1.onrender.com　本番　vercel
 
@@ -99,7 +99,8 @@ export const deletePostsApi = async(id)=>{
 export  const updatePostsApi = async(
     id,
     title,
-    content
+    content,
+    image_path
 )=>{
     return await request(
         `/posts/${id}`,
@@ -107,6 +108,7 @@ export  const updatePostsApi = async(
     {
         title,
         content,
+        image_path
     }
 );
     };

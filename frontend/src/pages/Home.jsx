@@ -29,8 +29,13 @@ const{
     updatePost,
 
     loginUser,
+
     image,
-    setImage
+    setImage,
+    preview,
+    setPreview,
+    currentImage,
+    setCurrentImage
 } =usePosts();
     return (
 <div className="min-h-screen  p-6" id='main'>      
@@ -49,6 +54,10 @@ const{
         sendPost={sendPost}
         image={image}
         setImage={setImage}
+        currentImage={currentImage}
+        setCurrentImage={setCurrentImage}
+        preview={preview}
+        setPreview={setPreview}
     />
 
     {/* タイトルと内容表示とローディング とエラー*/}
@@ -70,10 +79,16 @@ const{
     isModalOpen={isModalOpen}
     title={title}
     setTitle={setTitle}
-    setContent={setContent}
     content={content}
+    setContent={setContent}
     updatePost={updatePost}
     setIsModalOpen={setIsModalOpen}
+    image={image}
+    setImage={setImage}
+    currentImage={currentImage}
+    setCurrentImage={setCurrentImage}
+    preview={preview}
+    setPreview={setPreview}
     />
         </div>
     )
